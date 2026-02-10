@@ -1,0 +1,6 @@
+{
+  "name": "speckit-coding-agent",
+  "description": "Spec-Driven Development workflow with OpenCode, integrating spec-kit for specifications before coding",
+  "category": "Coding Agents",
+  "requires": ["opencode", "uv", "specify-cli"]
+}

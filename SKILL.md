@@ -104,12 +104,14 @@ echo "/speckit.implement" | /root/.opencode/bin/opencode run
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
 │ 5. Subagents read all artifacts and implement                   │
-│    (constitution, spec, plan, tasks)                             │
+│    - CONSTITUTION.md, SPECIFICATION.md, PLAN.md, TASKS.md       │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│ 6. /speckit.implement → Updates TASKS.md with execution status  │
-│    (optional but recommended for tracking)                      │
+│ 6. /speckit.implement → Updates TASKS.md with status            │
+│    - Marks [x] completed tasks                                  │
+│    - Adds timestamps and metadata                               │
+│    - Maintains living task list                                 │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
@@ -283,36 +285,136 @@ sessions_spawn task="Read CONSTITUTION.md, SPECIFICATION.md, PLAN.md, TASKS.md f
 
 ---
 
+## /speckit.implement - Execution Tracking
+
+**Purpose:** Updates TASKS.md with execution status, marking completed tasks and tracking implementation progress.
+
+### How It Works
+
+When you run `/speckit.implement`, the system:
+1. Scans the project directory for executed work
+2. Reads the current TASKS.md
+3. Marks tasks as [x] complete based on actual implementation
+4. Updates the file with execution metadata
+
+### Usage
+
+```bash
+echo "/speckit.implement" | /root/.opencode/bin/opencode run
+```
+
+### Example: Updated TASKS.md
+
+After running `/speckit.implement`, TASKS.md transforms from:
+
+**Before:**
+```markdown
+## Tasks
+
+- [ ] Create HTML structure
+- [ ] Implement CSS styling
+- [ ] Add JavaScript functionality
+```
+
+**After:**
+```markdown
+## Tasks
+
+- [x] Create HTML structure (completed 2026-02-11 19:42 UTC)
+- [ ] Implement CSS styling (in progress)
+- [ ] Add JavaScript functionality (pending)
+```
+
+### When to Run
+
+| Timing | Action |
+|--------|--------|
+| After subagent completes | Run `/speckit.implement` to track progress |
+| Before review | Check which tasks are done vs pending |
+| After each feature | Update task status |
+| End of session | Final update for audit trail |
+
+### Manual Update Alternative
+
+If implementation was done externally:
+
+```bash
+# Edit TASKS.md manually to mark completed tasks:
+- [x] Task completed
+- [ ] Task pending
+```
+
+Or use the subagent to scan and update automatically.
+
+### Benefits of Consistent Usage
+
+1. **Living Documentation:** TASKS.md becomes a real-time project status
+2. **Progress Visibility:** Instantly see what's done, in-progress, pending
+3. **Accountability:** Timestamps track when each task was completed
+4. **Context Preservation:** Future team members see implementation history
+5. **Regression Prevention:** Know exactly what was changed and when
+
+### Best Practices
+
+- Run `/speckit.implement` after EVERY subagent task
+- Include in your daily workflow alongside spec commands
+- Keep TASKS.md updated even for small changes
+- Use timestamps for audit trail
+- Reference updated TASKS.md when asking for help or reviews
+
+---
+
 ## Fallback Strategy
 
 When using OpenCode for coding tasks, the system follows this fallback strategy:
 
-| Priority | Model | Provider |
-|----------|-------|----------|
-| **Primary** | `opencode/minimax-m2.1-free` | OpenCode |
-| **Fallback 1** | `opencode/kimi-k2.5-free` | OpenCode |
-| **Fallback 2** | `opencode/glm-4.7-free` | OpenCode |
-| **Fallback 3** | `opencode/gpt-5-nano` | OpenCode |
+| Priority | Model | Provider | Role |
+|----------|-------|----------|------|
+| **Primary** | `opencode/kimi-k2.5-free` | OpenCode | Main model for coding tasks |
+| **Fallback 1** | `opencode/minimax-m2.1-free` | OpenCode | High-quality alternative |
+| **Fallback 2** | `opencode/glm-4.7-free` | OpenCode | Efficient standard tasks |
+| **Secundário** | `openrouter/xiaomi/mimo-v2-flash` | OpenRouter | Cross-provider backup |
 
-The primary model (`minimax-m2.1-free`) is used first, and if unavailable, the system automatically falls back through the other models in order.
+### Model Order for Opencode Task Execution
+
+```json
+{
+  "primary": "opencode/kimi-k2.5-free",
+  "fallbacks": [
+    "opencode/minimax-m2.1-free",
+    "opencode/glm-4.7-free"
+  ]
+}
+```
+
+**Cross-Provider Backup:** When OpenCode models are rate-limited or unavailable, the system falls back to `openrouter/xiaomi/mimo-v2-flash` (OpenRouter) for cross-provider resilience.
+
+The primary model (`kimi-k2.5-free`) is used first, and if unavailable, the system automatically falls back through the other models in order.
+
+### Why This Order?
+
+- **Primary (Kimi K.25):** Best overall capability for coding and complex reasoning tasks
+- **Fallback 1 (MiniMax M2.1):** Similar capability level, excellent for complex reasoning
+- **Fallback 2 (GLM 4.7):** Efficient model for standard tasks when higher models hit limits
+- **Secundário (Xiaomi Mimo v2 Flash):** Different provider (OpenRouter) ensures continuity when OpenCode models are rate-limited
 
 ---
 
 ## OpenCode
 
-**Default Model:** `opencode/minimax-m2.1-free`
+**Default Model:** `opencode/kimi-k2.5-free`
 
-OpenCode is the preferred coding agent for this workspace. It uses minimax-m2.1-free as the primary model with automatic fallbacks to other free models.
+OpenCode is the preferred coding agent for this workspace. It uses kimi-k2.5-free as the primary model with automatic fallbacks to other free models.
 
 ```bash
-# Basic usage (uses default minimax-m2.1-free model)
+# Basic usage (uses default kimi-k2.5-free model)
 bash workdir:~/project background:true command:"opencode run \"Your task\""
 
-# Explicit model specification (optional, defaults to minimax-m2.1-free)
-bash workdir:~/project background:true command:"opencode run --model opencode/minimax-m2.1-free \"Your task\""
+# Explicit model specification (optional, defaults to kimi-k2.5-free)
+bash workdir:~/project background:true command:"opencode run --model opencode/kimi-k2.5-free \"Your task\""
 
 # If primary is unavailable, it automatically falls back:
-# kimi-k2.5-free → glm-4.7-free → gpt-5-nano
+# minimax-m2.1-free → glm-4.7-free → (openrouter/xiaomi/mimo-v2-flash as cross-provider backup)
 ```
 
 ---

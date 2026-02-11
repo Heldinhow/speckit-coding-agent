@@ -63,9 +63,23 @@ echo "/speckit.tasks" | opencode run
 ```
 ✅ Creates: `TASKS.md`
 
-#### ⛔ Step 5: DO NOT EXECUTE /speckit.implement
+#### Step 5: Execute Implementation and Update Tasks
 
-The `/speckit.implement` command should NOT be executed directly. Instead, delegate implementation tasks to subagents.
+After subagents complete implementation, update tasks.md with execution status:
+
+**Option A: Run /speckit.implement directly**
+```bash
+echo "/speckit.implement" | /root/.opencode/bin/opencode run
+```
+**Result:** Updates TASKS.md with executed tasks, marks as complete
+
+**Option B: Manual update if implementation done externally**
+```bash
+# Manually update TASKS.md to mark completed tasks
+# or let /speckit.implement scan and update
+```
+
+**Key Benefit:** `/speckit.implement` maintains a living task list with execution history
 
 ---
 
@@ -81,7 +95,7 @@ The `/speckit.implement` command should NOT be executed directly. Instead, deleg
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│ 3. /speckit.plan → PLAN.md (implementation phases)             │
+│ 3. /speckit.plan → PLAN.md (implementation phases)              │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
@@ -89,12 +103,17 @@ The `/speckit.implement` command should NOT be executed directly. Instead, deleg
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│ 5. Subagents read all artifacts (constitution, spec, plan, tasks) │
-│    Then execute tasks from TASKS.md                              │
+│ 5. Subagents read all artifacts and implement                   │
+│    (constitution, spec, plan, tasks)                             │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│ 6. Code implementation following specification                   │
+│ 6. /speckit.implement → Updates TASKS.md with execution status  │
+│    (optional but recommended for tracking)                      │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ 7. Code implementation complete with tracked progress           │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -145,6 +164,12 @@ The `/speckit.implement` command should NOT be executed directly. Instead, deleg
    - Read all artifacts (CONSTITUTION.md, SPECIFICATION.md, PLAN.md, TASKS.md)
    - Implement tasks from TASKS.md
 
+5. **Update Tasks with Execution Status:**
+   ```bash
+   echo "/speckit.implement" | /root/.opencode/bin/opencode run
+   ```
+   This updates TASKS.md to track what has been implemented.
+
 ---
 
 ## Complete Workflow Examples
@@ -175,6 +200,10 @@ echo "/speckit.plan" | opencode run
 echo "/speckit.tasks" | opencode run
 
 # Step 5: Delegate to subagent (read all artifacts first)
+
+# Step 6: Update tasks.md with execution status
+echo "/speckit.implement" | /root/.opencode/bin/opencode run
+# This updates TASKS.md marking completed tasks
 ```
 
 ### Example: Adding a New Feature
@@ -192,6 +221,10 @@ echo "/speckit.plan" | opencode run
 echo "/speckit.tasks" | opencode run
 
 # Step 4: Delegate to subagent (read all artifacts first)
+
+# Step 5: Update tasks.md with execution status
+echo "/speckit.implement" | /root/.opencode/bin/opencode run
+# This updates TASKS.md marking completed tasks
 ```
 
 ---
@@ -216,10 +249,14 @@ echo "/speckit.constitution" | opencode run  # NOW it works
 { echo "/speckit.constitution"; echo "/speckit.specify"; } | opencode run
 ```
 
-❌ **DO NOT run /speckit.implement:**
+❌ **DO NOT skip /speckit.implement after implementation:**
 ```bash
-echo "/speckit.implement" | opencode run  # WRONG!
+# Wrong: TASKS.md stays with checkboxes empty
+# Right: 
+echo "/speckit.implement" | opencode run  # Updates TASKS.md
 ```
+
+**Why:** Without updating TASKS.md, you lose track of what was actually implemented vs what was planned.
 
 ❌ **DO NOT execute without reading spec context:**
 ```bash
@@ -228,6 +265,21 @@ sessions_spawn task="Implement authentication"
 # Right: Subagent reads all artifacts
 sessions_spawn task="Read CONSTITUTION.md, SPECIFICATION.md, PLAN.md, TASKS.md first."
 ```
+
+---
+
+## Why Use /speckit.implement?
+
+**Benefits:**
+1. **Automatic tracking**: TASKS.md gets updated with execution status
+2. **Progress visibility**: Clear view of what's done vs pending
+3. **Audit trail**: History of implementation steps
+4. **Future reference**: See completed work for maintenance
+
+**Best Practice:**
+- Run `/speckit.implement` AFTER subagents complete work
+- Or run it periodically to update progress
+- The file becomes a living document of project state
 
 ---
 

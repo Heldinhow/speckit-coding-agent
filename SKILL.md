@@ -41,11 +41,11 @@ echo "/speckit.implement" | opencode run     # Marks completed tasks
 
 ---
 
-This skill integrates **spec-kit** workflow with OpenCode for spec-driven development. Before MUST follow coding, you the spec workflow to create specifications, plans, and tasks.
+This skill integrates **spec-kit** workflow with OpenCode for spec-driven development. Use this workflow to create specifications, plans, and tasks before coding.
 
 ### Prerequisites: Install and Initialize Spec-Kit
 
-⚠️ CRITICAL: These steps MUST be completed BEFORE using any speckit commands.
+These steps must be completed before using any speckit commands.
 
 #### Step 1: Install spec-kit
 ```bash
@@ -58,9 +58,7 @@ cd /root/.openclaw/workspace/my-project
 specify init --here --ai opencode
 ```
 
-#### ⚠️ IMPORTANT: Only after initialization will /speckit.* commands work!
-
-The slash commands (`/speckit.constitution`, `/speckit.specify`, `/speckit.plan`, `/speckit.tasks`) are ONLY available AFTER running `specify init --here --ai opencode` in your project directory.
+After initializing, `/speckit.*` commands will be available in your project directory.
 
 ---
 
@@ -496,9 +494,7 @@ bash workdir:~/project background:true command:"codex --yolo \"Build a snake gam
 
 ### Reviewing PRs (vanilla, no flags)
 
-**⚠️ CRITICAL: Never review PRs in Clawdbot's own project folder!**
-- Either use the project where the PR is submitted (if it's NOT ~/Projects/clawdbot)
-- Or clone to a temp folder first
+Avoid reviewing PRs in the live clawdbot project folder. Use the project where the PR is submitted (if it's NOT ~/Projects/clawdbot), or clone to a temp folder first.
 
 ```bash
 # Option 1: Review in the actual project (if NOT clawdbot)
@@ -588,15 +584,15 @@ git worktree remove /tmp/issue-99
 
 ---
 
-## ⚠️ Rules
+## Guidelines
 
-1. **Respect tool choice** — if user asks for Codex, use Codex. NEVER offer to build it yourself!
+1. **Respect tool choice** — if user asks for Codex, use Codex. Do not offer to build it yourself.
 2. **Be patient** — don't kill sessions because they're "slow"
 3. **Monitor with process:log** — check progress without interfering
 4. **--full-auto for building** — auto-approves changes
 5. **Parallel is OK** — run many Codex processes at once for batch work
-6. **NEVER start Codex in ~/clawd/** — it'll read your soul docs! Use the target project dir or /tmp for blank slate chats
-7. **NEVER checkout branches in ~/Projects/clawdbot/** — that's the LIVE instance! Clone to /tmp or use git worktree for PR reviews
+6. **Avoid starting Codex in ~/clawd/** — it may read sensitive docs. Use target project dir or /tmp for blank slate chats
+7. **Avoid checking out branches in ~/Projects/clawdbot/** — that directory contains the LIVE instance. Clone to /tmp or use git worktree for PR reviews
 
 ---
 

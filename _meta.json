@@ -1,6 +1,7 @@
 {
   "name": "speckit-coding-agent",
-  "description": "Spec-Driven Development workflow with OpenCode, integrating spec-kit for specifications before coding",
+  "description": "Complete Spec-Driven Development workflow: Constitution → Specification → Plan → Tasks → Implementation. AI-powered artifact generation via OpenCode.",
   "category": "Coding Agents",
+  "version": "1.1.0",
   "requires": ["opencode", "uv", "specify-cli"]
 }

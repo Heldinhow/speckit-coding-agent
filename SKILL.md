@@ -41,8 +41,6 @@ echo "/speckit.implement" | opencode run     # Marks completed tasks
 
 ---
 
-⚠️ **OpenClawCLI must be installed before using this skill.**
-
 This skill integrates **spec-kit** workflow with OpenCode for spec-driven development. Before MUST follow coding, you the spec workflow to create specifications, plans, and tasks.
 
 ### Prerequisites: Install and Initialize Spec-Kit
